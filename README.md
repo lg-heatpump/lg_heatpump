@@ -55,7 +55,7 @@ block reads.
 ### HACS (recommended)
 
 1. In HACS, open the three-dot menu and choose **Custom repositories**.
-2. Add `https://github.com/G-nn-r/lg_heatpump` with category **Integration**.
+2. Add `https://github.com/lg-heatpump/lg_heatpump` with category **Integration**.
 3. Search HACS for **LG Heat Pump** and install it.
 4. Restart Home Assistant.
 
@@ -193,15 +193,15 @@ and pulled in with `scripts/vendor`.
 
 Apache-2.0. See [LICENSE](LICENSE).
 
-[library]: https://github.com/G-nn-r/lg_heatpump
+[library]: https://github.com/lg-heatpump/lg-heatpump-modbus
 [hacs]: https://hacs.xyz
 [hacs-shield]: https://img.shields.io/badge/HACS-Custom-41BDF5.svg
-[releases]: https://github.com/G-nn-r/lg_heatpump/releases
-[release-shield]: https://img.shields.io/github/release/G-nn-r/lg_heatpump.svg
+[releases]: https://github.com/lg-heatpump/lg_heatpump/releases
+[release-shield]: https://img.shields.io/github/release/lg-heatpump/lg_heatpump.svg
 [license-shield]: https://img.shields.io/badge/license-Apache--2.0-blue.svg
-[lint]: https://github.com/G-nn-r/lg_heatpump/actions/workflows/lint.yml
-[lint-shield]: https://github.com/G-nn-r/lg_heatpump/actions/workflows/lint.yml/badge.svg
-[validate]: https://github.com/G-nn-r/lg_heatpump/actions/workflows/validate.yml
-[validate-shield]: https://github.com/G-nn-r/lg_heatpump/actions/workflows/validate.yml/badge.svg
-[tests]: https://github.com/G-nn-r/lg_heatpump/actions/workflows/test.yml
-[tests-shield]: https://github.com/G-nn-r/lg_heatpump/actions/workflows/test.yml/badge.svg
+[lint]: https://github.com/lg-heatpump/lg_heatpump/actions/workflows/lint.yml
+[lint-shield]: https://github.com/lg-heatpump/lg_heatpump/actions/workflows/lint.yml/badge.svg
+[validate]: https://github.com/lg-heatpump/lg_heatpump/actions/workflows/validate.yml
+[validate-shield]: https://github.com/lg-heatpump/lg_heatpump/actions/workflows/validate.yml/badge.svg
+[tests]: https://github.com/lg-heatpump/lg_heatpump/actions/workflows/test.yml
+[tests-shield]: https://github.com/lg-heatpump/lg_heatpump/actions/workflows/test.yml/badge.svg

@@ -3,7 +3,7 @@
 Reads and controls LG heat pumps (Therma V and siblings) over Modbus TCP,
 backed by the vendored ``lg_heatpump_modbus`` device library.
 
-For more details, see https://github.com/G-nn-r/lg_heatpump
+For more details, see https://github.com/lg-heatpump/lg_heatpump
 """
 
 from __future__ import annotations

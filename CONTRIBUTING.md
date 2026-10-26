@@ -81,6 +81,6 @@ Please attach the integration's **Diagnostics** download. It contains the raw,
 undecoded register map read from your heat pump, and that is what makes a
 scaling or address bug fixable without owning your hardware.
 
-[library]: https://github.com/G-nn-r/lg-heatpump-modbus
+[library]: https://github.com/lg-heatpump/lg-heatpump-modbus
 [hassfest]: https://developers.home-assistant.io/blog/2020/04/16/hassfest
 [hacs-action]: https://github.com/hacs/action

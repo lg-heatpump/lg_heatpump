@@ -4,5 +4,5 @@ contact_links:
     url: https://community.home-assistant.io/
     about: Ask questions and share setups with other Home Assistant users.
   - name: Device library issues
-    url: https://github.com/G-nn-r/lg_heatpump/issues
+    url: https://github.com/lg-heatpump/lg_heatpump/issues
     about: Report a wrong register, scaling or missing datapoint against the device library.

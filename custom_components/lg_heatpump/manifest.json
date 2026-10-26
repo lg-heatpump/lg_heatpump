@@ -4,10 +4,10 @@
   "codeowners": ["@G-nn-r"],
   "config_flow": true,
   "dependencies": ["modbus"],
-  "documentation": "https://github.com/G-nn-r/lg_heatpump",
+  "documentation": "https://github.com/lg-heatpump/lg_heatpump",
   "integration_type": "device",
   "iot_class": "local_polling",
-  "issue_tracker": "https://github.com/G-nn-r/lg_heatpump/issues",
+  "issue_tracker": "https://github.com/lg-heatpump/lg_heatpump/issues",
   "loggers": ["modbus_connection", "tmodbus"],
   "requirements": ["modbus-connection[tmodbus]>=4.8.1,<5"],
   "version": "0.0.2"

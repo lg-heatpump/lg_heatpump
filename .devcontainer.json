@@ -1,5 +1,5 @@
 {
-    "name": "G-nn-r/lg_heatpump",
+    "name": "lg-heatpump/lg_heatpump",
     "build": {
         "dockerfile": ".devcontainer.Dockerfile",
         "context": "."
