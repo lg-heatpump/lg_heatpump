@@ -10,5 +10,5 @@
   "issue_tracker": "https://github.com/lg-heatpump/lg_heatpump/issues",
   "loggers": ["modbus_connection", "tmodbus"],
   "requirements": ["modbus-connection[tmodbus]>=4.8.1,<5"],
-  "version": "0.0.2"
+  "version": "0.0.3"
 }
