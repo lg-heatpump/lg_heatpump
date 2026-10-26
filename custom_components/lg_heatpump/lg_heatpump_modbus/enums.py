@@ -16,10 +16,9 @@ class OperationMode(IntEnum):
     Used in controls.py in Controls.operation_mode.
     """
 
-    # TODO verify
-    COOL = 0  # not tested
+    COOL = 0  # TODO verify; not tested; G-nn-r cannot set this mode (also not on the remote control)
     AUTO = 3  # tested by G-nn-r
-    HEAT = 4  # not tested
+    HEAT = 4  # tested by G-nn-r
 
 
 class OduOperationCycle(IntEnum):
@@ -37,10 +36,9 @@ class ControlMethod(IntEnum):
     Used in controls.py in Controls.control_method.
     """
 
-    # TODO verify
     WATER_OUTLET = 0  # tested by G-nn-r
-    WATER_INLET = 1   # not tested
-    ROOM_AIR = 2      # not tested
+    WATER_INLET = 1   # tested by G-nn-r
+    ROOM_AIR = 2      # TODO verify; not tested; G-nn-r cannot set this mode (also not on the remote control)
 
 
 class EnergyState(IntEnum):

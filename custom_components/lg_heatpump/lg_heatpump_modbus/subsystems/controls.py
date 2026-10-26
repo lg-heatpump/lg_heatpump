@@ -42,7 +42,6 @@ class Controls(LgComponent):
     register_space = "holding"
     register_ranges = ((0, 9),)
 
-    # TODO verify - verification in OperationMode class
     operation_mode = enum_value(
         0,
         OperationMode,
@@ -173,7 +172,6 @@ class Controls(LgComponent):
         """Write the setpoint shift of ``circuit`` (1 or 2)."""
         await self.write(f"shift_in_auto_mode_circuit_{_check(circuit)}", value)
 
-    # TODO verify
     async def set_operation_mode(self, mode: OperationMode) -> None:
         """Write the requested operation mode."""
         await self.write("operation_mode", mode)
