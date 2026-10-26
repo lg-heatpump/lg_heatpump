@@ -367,13 +367,13 @@ async def test_select_control_method(
         SERVICE_SELECT_OPTION,
         {
             ATTR_ENTITY_ID: "select.lg_therma_v_control_method",
-            ATTR_OPTION: "room_air",
+            ATTR_OPTION: "water_inlet",
         },
         blocking=True,
     )
     await hass.async_block_till_done(wait_background_tasks=True)
 
-    assert mock_connection.for_unit(MOCK_UNIT_ID).holding[1] == 2
+    assert mock_connection.for_unit(MOCK_UNIT_ID).holding[1] == 1
 
 
 async def test_refresh_button_polls_both_coordinators(
