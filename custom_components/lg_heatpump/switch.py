@@ -46,24 +46,26 @@ SWITCH_DESCRIPTIONS: tuple[LgHeatPumpSwitchDescription, ...] = (
         device_class=SwitchDeviceClass.SWITCH,
         entity_category=EntityCategory.CONFIG,
     ),
-    LgHeatPumpSwitchDescription(
-        key="emergency_stop",
-        translation_key="emergency_stop",
-        component="switches",
-        attribute="emergency_stop",
-        device_class=SwitchDeviceClass.SWITCH,
-        entity_category=EntityCategory.CONFIG,
-        entity_registry_enabled_default=False,
-    ),
-    LgHeatPumpSwitchDescription(
-        key="trigger_emergency_operation",
-        translation_key="trigger_emergency_operation",
-        component="switches",
-        attribute="trigger_emergency_operation",
-        device_class=SwitchDeviceClass.SWITCH,
-        entity_category=EntityCategory.CONFIG,
-        entity_registry_enabled_default=False,
-    ),
+    # Emergency switches are disabled until tested (required for the HACS default
+    # repository list). Re-enable them together with the issue #23 clean-up.
+    # LgHeatPumpSwitchDescription(
+    #     key="emergency_stop",
+    #     translation_key="emergency_stop",
+    #     component="switches",
+    #     attribute="emergency_stop",
+    #     device_class=SwitchDeviceClass.SWITCH,
+    #     entity_category=EntityCategory.CONFIG,
+    #     entity_registry_enabled_default=False,
+    # ),
+    # LgHeatPumpSwitchDescription(
+    #     key="trigger_emergency_operation",
+    #     translation_key="trigger_emergency_operation",
+    #     component="switches",
+    #     attribute="trigger_emergency_operation",
+    #     device_class=SwitchDeviceClass.SWITCH,
+    #     entity_category=EntityCategory.CONFIG,
+    #     entity_registry_enabled_default=False,
+    # ),
 )
 
 
