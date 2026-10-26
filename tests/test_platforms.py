@@ -223,6 +223,7 @@ async def test_climate_off_clears_the_heating_circuit_coil(
     assert state.attributes[ATTR_HVAC_ACTION] == HVACAction.OFF
 
 
+@pytest.mark.skip(reason="Cool mode is disabled until verified on a real device (#24)")
 async def test_climate_cool_writes_mode_and_heating_circuit(
     hass: HomeAssistant,
     init_integration: MockConfigEntry,

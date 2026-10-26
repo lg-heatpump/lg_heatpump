@@ -36,7 +36,8 @@ from .lg_heatpump_modbus.subsystems.controls import (
 PARALLEL_UPDATES = 1
 
 _TO_HVAC = {
-    OperationMode.COOL: HVACMode.COOL,
+    # Cool mode is disabled until it has been verified on a real device (#24).
+    # OperationMode.COOL: HVACMode.COOL,
     OperationMode.AUTO: HVACMode.AUTO,
     OperationMode.HEAT: HVACMode.HEAT,
 }
@@ -88,7 +89,13 @@ class LgHeatPumpClimate(LgHeatPumpSpanningEntity, ClimateEntity):
     entity_description: LgHeatPumpClimateDescription
 
     _attr_temperature_unit = UnitOfTemperature.CELSIUS
-    _attr_hvac_modes = [HVACMode.OFF, HVACMode.HEAT, HVACMode.COOL, HVACMode.AUTO]
+    # HVACMode.COOL is disabled until it has been verified on a real device (#24).
+    _attr_hvac_modes = [
+        HVACMode.OFF,
+        HVACMode.HEAT,
+        # HVACMode.COOL,
+        HVACMode.AUTO,
+    ]
     _attr_supported_features = (
         ClimateEntityFeature.TARGET_TEMPERATURE
         | ClimateEntityFeature.TURN_ON
