@@ -35,10 +35,8 @@ SELECT_DESCRIPTIONS: tuple[LgHeatPumpSelectDescription, ...] = (
         component="controls",
         attribute="control_method",
         # ROOM_AIR is disabled until it has been tested on real hardware. See issue #25
-        options=[
-            option for option in _options(ControlMethod) if option != "room_air"
-        ],
-        # options=_options(ControlMethod),
+        options=[option for option in _options(ControlMethod) if option != "room_air"],
+        # options=_options(ControlMethod),  # noqa: ERA001
         options_enum=ControlMethod,
         entity_category=EntityCategory.CONFIG,
     ),
