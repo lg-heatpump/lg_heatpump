@@ -53,6 +53,9 @@ split-on-trailing-comma = false
     "S101", # Use of assert detected
     "SLF001", # Private member accessed
 ]
+"custom_components/lg_heatpump/switch.py" = [
+    "ERA001", # Emergency switches are commented out until tested (issue #23)
+]
 "scripts/*" = [
     "T201", # A build script talks to the terminal
 ]
