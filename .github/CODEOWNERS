@@ -1,0 +1,13 @@
+# Review requests are sent to the owners of the changed files automatically.
+# The last matching pattern wins.
+
+*                                                 @lg-heatpump/maintainers
+
+# CI, dependency updates and repository configuration
+/.github/                                         @G-nn-r
+
+# Integration metadata (version, requirements, code owners)
+/custom_components/lg_heatpump/manifest.json      @G-nn-r
+
+# Vendored device library (only changed through scripts/vendor)
+/custom_components/lg_heatpump/lg_heatpump_modbus/  @G-nn-r
