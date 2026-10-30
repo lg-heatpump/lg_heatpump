@@ -1,6 +1,6 @@
 # The integration talks Modbus through modbus-connection, whose in-memory mock
 # backend and pytest plugin let the whole suite run without hardware.
-modbus-connection[tmodbus]>=4.12.3,<5
+modbus-connection[tmodbus]>=4.12.7,<5
 pytest-homeassistant-custom-component
 # Home Assistant's modbus integration, which this integration depends on, imports
 # pymodbus at load time; Home Assistant installs it itself, a bare test env must too.
