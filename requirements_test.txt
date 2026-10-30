@@ -4,4 +4,4 @@ modbus-connection[tmodbus]>=4.12.3,<5
 pytest-homeassistant-custom-component
 # Home Assistant's modbus integration, which this integration depends on, imports
 # pymodbus at load time; Home Assistant installs it itself, a bare test env must too.
-pymodbus==3.13.1
+pymodbus==3.16.1
