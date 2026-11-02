@@ -43,6 +43,9 @@
       }
     },
     "select": {
+      "operation_mode": {
+        "default": "mdi:cog-transfer-outline"
+      },
       "control_method": {
         "default": "mdi:tune-variant"
       }
