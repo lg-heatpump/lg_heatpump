@@ -17,8 +17,10 @@ from homeassistant.components.climate import (
 )
 from homeassistant.const import ATTR_TEMPERATURE, UnitOfTemperature
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import ServiceValidationError
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
+from .const import DOMAIN
 from .coordinator import LgHeatPumpConfigEntry
 from .entity import (
     LgHeatPumpEntityDescription,
@@ -182,11 +184,14 @@ class LgHeatPumpClimate(LgHeatPumpSpanningEntity, ClimateEntity):
         """Write a new setpoint for this circuit."""
         if (temperature := kwargs.get(ATTR_TEMPERATURE)) is None:
             return
-        controls = self.device.controls
         if self._on_room_air:
-            await controls.set_room_air_setpoint(self._circuit, temperature)
-        else:
-            await controls.set_target_temperature(self._circuit, temperature)
+            # Writing the room air setpoint is disabled until it has been tested on
+            # real hardware. See issue #25
+            raise ServiceValidationError(
+                translation_domain=DOMAIN,
+                translation_key="room_air_setpoint_not_supported",
+            )
+        await self.device.controls.set_target_temperature(self._circuit, temperature)
         await self._async_refresh()
 
     @override

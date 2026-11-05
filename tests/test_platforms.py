@@ -264,6 +264,16 @@ async def test_climate_follows_room_air_control(
     assert state.attributes[ATTR_CURRENT_TEMPERATURE] == 21.4  # room temperature
     assert state.attributes["max_temp"] == 30.0
 
+    # Writing the room setpoint is blocked until verified on hardware (#25).
+    with pytest.raises(ServiceValidationError):
+        await hass.services.async_call(
+            CLIMATE_DOMAIN,
+            SERVICE_SET_TEMPERATURE,
+            {ATTR_ENTITY_ID: "climate.lg_therma_v_circuit_1", ATTR_TEMPERATURE: 22},
+            blocking=True,
+        )
+    assert mock_connection.for_unit(MOCK_UNIT_ID).holding[3] == 210  # unchanged
+
 
 async def test_water_heater(
     hass: HomeAssistant,

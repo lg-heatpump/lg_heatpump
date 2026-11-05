@@ -255,6 +255,9 @@
     "modbus_error": {
       "message": "Error communicating with the heat pump: {error}"
     },
+    "room_air_setpoint_not_supported": {
+      "message": "Setting the room temperature is not supported yet, because it has not been verified on a real heat pump."
+    },
     "no_component_answered": {
       "message": "The heat pump did not answer any of the registers that were read."
     }
