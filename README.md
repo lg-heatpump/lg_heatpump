@@ -12,11 +12,11 @@ Home Assistant integration for **LG heat pumps** — the Therma V family (both R
 siblings that share its Modbus register map. Set up from the UI, polled locally
 over Modbus TCP, with no cloud account and no YAML.
 
-This is the HACS build. There are three different ways to control your LG heat pump via Modbus in Home Assistant:
+This is the Marketplace (formerly called HACS) build. There are three different ways to control your LG heat pump via Modbus in Home Assistant:
 
-| Integration         | YAML-based *(legacy)*                                                                                                   | HACS Integration *(this repository)*  | Core Integration *(coming soon)*                                                               |
+| Integration         | YAML-based *(legacy)*                                                                                                   | Marketplace Integration *(this repository)* | Core Integration *(coming soon)*                                                               |
 |:--------------------|:------------------------------------------------------------------------------------------------------------------------|:--------------------------------------|:-----------------------------------------------------------------------------------------------|
-| Installation method | Manually handling of YAML-files                                                                                         | Relatively easy installation via HACS | No installation required, included in HA core - just click "Add device" and select integration |
+| Installation method | Manually handling of YAML-files                                                                                         | Relatively easy installation via Marketplace | No installation required, included in HA core - just click "Add device" and select integration |
 | Device library      | No library, hard-coded register map                                                                                     | `lg-heatpump-modbus` (vendored)       | `lg-heatpump-modbus` (installed via PyPI)                                                      |
 | Modbus library      | `pymodbus`                                                                                                              | `modbus-connection` / `tmodbus`       | `modbus-connection` / `tmodbus`                                                                |
 | Setup from UI       | No                                                                                                                      | Yes                                   | Yes                                                                                            |
@@ -24,7 +24,7 @@ This is the HACS build. There are three different ways to control your LG heat p
 | Limitations         | No UI setup. Entities do not belong to any device. Complicated entity handling. Hard to update. Can cause conflicts with other Modbus communications | Might get breaking changes. Requires at least HA 2026.9                                         | Not available yet      |
 
 
-Currently, this HACS integration is the recommended way. 
+Currently, this Marketplace (HACS) integration is the recommended way. 
 
 ## What you get
 
@@ -52,11 +52,11 @@ block reads.
 
 ## Installation
 
-### HACS (recommended)
+### Marketplace (formerly HACS, recommended)
 
-1. In HACS, open the three-dot menu and choose **Custom repositories**.
+1. In the Marketplace (formerly HACS), open the three-dot menu and choose **Custom repositories**.
 2. Add `https://github.com/lg-heatpump/lg_heatpump` with category **Integration**.
-3. Search HACS for **LG Heat Pump** and install it.
+3. Search the Marketplace for **LG Heat Pump** and install it.
 4. Restart Home Assistant.
 
 ### Manual
