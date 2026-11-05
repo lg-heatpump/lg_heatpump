@@ -255,6 +255,9 @@
     "modbus_error": {
       "message": "Fehler bei der Kommunikation mit der Wärmepumpe: {error}"
     },
+    "room_air_setpoint_not_supported": {
+      "message": "Das Einstellen der Raumtemperatur wird noch nicht unterstützt, weil es an einer echten Wärmepumpe noch nicht überprüft wurde."
+    },
     "no_component_answered": {
       "message": "Die Wärmepumpe hat auf keines der gelesenen Register geantwortet."
     }
