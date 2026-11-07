@@ -8,3 +8,9 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    ignore:
+      # Pinned by Home Assistant core's `modbus` integration manifest
+      # (homeassistant/components/modbus/manifest.json). Bump these together with
+      # `homeassistant` so the tests run against what users actually get.
+      - dependency-name: "pymodbus"
+      - dependency-name: "modbus-connection"
