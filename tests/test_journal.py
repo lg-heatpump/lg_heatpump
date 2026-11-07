@@ -121,20 +121,18 @@ async def test_a_write_is_kept_with_its_value(
     assert any(r["request"].startswith("write_") for r in journal["requests"])
 
 
-async def test_the_journal_survives_a_reload_and_goes_with_the_entry(
+async def test_the_journal_belongs_to_the_loaded_entry(
     hass: HomeAssistant, init_integration: MockConfigEntry
 ) -> None:
-    """A reload keeps what led to it; removing the entry drops it."""
+    """It lives in the runtime data, so a reload starts it afresh."""
+    before = init_integration.runtime_data.journal
     await hass.config_entries.async_reload(init_integration.entry_id)
     await hass.async_block_till_done(wait_background_tasks=True)
 
     journal = await _journal(hass, init_integration)
-    assert [e["event"] for e in journal["events"]] == ["setup", "setup"]
-    assert len(journal["polls"]) == 4
-
-    await hass.config_entries.async_remove(init_integration.entry_id)
-    await hass.async_block_till_done(wait_background_tasks=True)
-    assert init_integration.entry_id not in hass.data.get(DOMAIN, {}).get("journal", {})
+    assert init_integration.runtime_data.journal is not before
+    assert [e["event"] for e in journal["events"]] == ["setup"]
+    assert DOMAIN not in hass.data or "journal" not in hass.data[DOMAIN]
 
 
 def test_the_buffers_are_bounded() -> None:

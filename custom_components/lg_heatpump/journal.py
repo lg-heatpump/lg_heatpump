@@ -15,9 +15,8 @@ Three bounded buffers, newest last:
 * ``events``: the rare things worth keeping longer than the polls: setups,
   sub-systems failing and coming back, timeouts, link errors and writes.
 
-The journal lives in memory only. It survives a reload of the entry, so a
-reload the integration triggers itself does not erase what led to it, but not a
-restart of Home Assistant.
+The journal lives in memory, in the entry's runtime data: a reload of the entry
+or a restart of Home Assistant starts it afresh.
 """
 
 from __future__ import annotations
@@ -31,14 +30,9 @@ from modbus_connection import ModbusTimeoutError
 
 from homeassistant.util.dt import utcnow
 
-from .const import DOMAIN
-
 if TYPE_CHECKING:
     from collections.abc import Awaitable, Callable, Mapping
 
-    from homeassistant.core import HomeAssistant
-
-    from .coordinator import LgHeatPumpConfigEntry
 
 MAX_REQUESTS = 2000
 MAX_POLLS = 1000
@@ -118,21 +112,6 @@ class Journal:
             "polls": list(self.polls),
             "requests": list(self.requests),
         }
-
-
-def journal_for(hass: HomeAssistant, entry: LgHeatPumpConfigEntry) -> Journal:
-    """Return the entry's journal, creating it on the first setup only."""
-    journals: dict[str, Journal] = hass.data.setdefault(DOMAIN, {}).setdefault(
-        "journal", {}
-    )
-    if (journal := journals.get(entry.entry_id)) is None:
-        journal = journals[entry.entry_id] = Journal()
-    return journal
-
-
-def forget_journal(hass: HomeAssistant, entry_id: str) -> None:
-    """Drop the journal of a removed entry."""
-    hass.data.get(DOMAIN, {}).get("journal", {}).pop(entry_id, None)
 
 
 class RecordingUnit:

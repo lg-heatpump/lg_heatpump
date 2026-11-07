@@ -22,7 +22,7 @@ from .const import (
     SETTINGS_SCAN_INTERVAL,
 )
 from .coordinator import LgHeatPumpCoordinator, LgHeatPumpRuntimeData
-from .journal import RecordingUnit, forget_journal, journal_for
+from .journal import Journal, RecordingUnit
 from .lg_heatpump_modbus import LgHeatPump
 
 if TYPE_CHECKING:
@@ -53,7 +53,7 @@ async def async_setup_entry(
         create_modbus_params(entry.data),
         entry.data[CONF_UNIT_ID],
     )
-    journal = journal_for(hass, entry)
+    journal = Journal()
     journal.event("setup", model=entry.data[CONF_MODEL])
     device = LgHeatPump(
         RecordingUnit(unit, journal),
@@ -88,11 +88,3 @@ async def async_unload_entry(
 ) -> bool:
     """Unload a config entry; the shared connection closes with its last holder."""
     return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
-
-
-async def async_remove_entry(
-    hass: HomeAssistant,
-    entry: LgHeatPumpConfigEntry,
-) -> None:
-    """Drop what the entry kept in memory."""
-    forget_journal(hass, entry.entry_id)
