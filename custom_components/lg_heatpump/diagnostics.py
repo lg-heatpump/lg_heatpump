@@ -19,6 +19,8 @@ async def async_get_config_entry_diagnostics(
     """Return diagnostics for a config entry."""
     runtime_data = entry.runtime_data
     device = runtime_data.device
+    # Taken before the raw dump, whose own requests would otherwise fill it.
+    journal = runtime_data.journal.as_dict()
     try:
         raw: dict[str, Any] | str = await device.async_read_raw()
     except ModbusError as err:
@@ -41,6 +43,7 @@ async def async_get_config_entry_diagnostics(
                 name: getattr(device, name).values() for name in device.component_names
             },
             "raw": raw,
+            "journal": journal,
         },
         TO_REDACT,
     )
