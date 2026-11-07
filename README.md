@@ -105,10 +105,10 @@ Two independent polls run against the heat pump:
 
 | Poll         | Interval   | Reads |
 |:-------------|:-----------| :---- |
-| Measurements | 30 seconds | Input registers and discrete inputs |
+| Measurements | 10 seconds | Input registers and discrete inputs |
 | Settings     | 60 seconds | Holding registers and coils |
 
-Setpoints do not change on their own, so re-reading them every 30 seconds only
+Setpoints do not change on their own, so re-reading them every 10 seconds only
 loads the bus. A write refreshes both polls immediately, so a change you make in
 Home Assistant is reflected as soon as the heat pump has taken it.
 
