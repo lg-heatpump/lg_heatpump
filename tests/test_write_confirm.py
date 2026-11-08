@@ -222,7 +222,9 @@ async def test_a_switch_write_is_confirmed_the_same_way(
     await _settle(hass, init_integration)
     unit = mock_connection.for_unit(MOCK_UNIT_ID)
     assert hass.states.get(SILENT_MODE).state == "off"
-    fake = _StaleUntilSleep(unit, "coil", SILENT_MODE_COIL, False, waits=1)
+    # The coil store is ``coil`` since modbus-connection 4.12, ``coils`` before.
+    space = "coil" if "coil" in vars(unit) else "coils"
+    fake = _StaleUntilSleep(unit, space, SILENT_MODE_COIL, False, waits=1)
     with patch(ASYNCIO, fake):
         await hass.services.async_call(
             SWITCH_DOMAIN, SERVICE_TURN_ON, {ATTR_ENTITY_ID: SILENT_MODE}, blocking=True
