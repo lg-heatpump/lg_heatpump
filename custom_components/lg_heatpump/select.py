@@ -70,5 +70,4 @@ class LgHeatPumpSelect(LgHeatPumpEntity, SelectEntity):
     async def async_select_option(self, option: str) -> None:
         """Write the selected option and refresh."""
         value = self.entity_description.options_enum[option.upper()]
-        await self._subsystem.write(self.entity_description.attribute, value)
-        await self.coordinator.async_request_refresh()
+        await self._async_write_and_refresh(value)

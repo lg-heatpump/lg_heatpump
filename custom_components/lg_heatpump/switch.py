@@ -93,8 +93,7 @@ class LgHeatPumpSwitch(LgHeatPumpEntity, SwitchEntity):
 
     async def _async_write(self, value: bool) -> None:
         """Write the coil and refresh so the state follows the device."""
-        await self._subsystem.write(self.entity_description.attribute, value)
-        await self.coordinator.async_request_refresh()
+        await self._async_write_and_refresh(value)
 
     @override
     async def async_turn_on(self, **kwargs: Any) -> None:
