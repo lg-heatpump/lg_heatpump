@@ -131,6 +131,8 @@ diagnostics attached.
 device page and open an issue. The dump contains the raw, undecoded register map,
 which is what makes a scaling or address bug fixable.
 
+**No connection was established**, e.g., `read_input_registers(0, 5): Response timeout after 10.0 seconds`.  This is a known issue on the Waveshare RS232/485 TO ETH adapter. In its web interface, set the `ModbusTCP Poll` to disabled.
+ 
 To collect logs, add this to `configuration.yaml`:
 
 ```yaml
@@ -155,13 +157,13 @@ template:
           target:
             entity_id: water_heater.lg_therma_v_hot_water
           data:
-            operation_mode: on
+            operation_mode: 'on'
         turn_off:
           service: water_heater.set_operation_mode
           target:
             entity_id: water_heater.lg_therma_v_hot_water
           data:
-            operation_mode: off
+            operation_mode: 'off'
 ```
 
 
