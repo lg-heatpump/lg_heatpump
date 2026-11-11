@@ -1,6 +1,6 @@
 # LG Heat Pump for Home Assistant
 
-[![HACS Custom][hacs-shield]][hacs]
+[![HACS Default][hacs-shield]][hacs]
 [![GitHub Release][release-shield]][releases]
 [![License][license-shield]](LICENSE)
 
@@ -54,10 +54,16 @@ block reads.
 
 ### Marketplace (formerly HACS, recommended)
 
-1. In the Marketplace (formerly HACS), open the three-dot menu and choose **Custom repositories**.
-2. Add `https://github.com/lg-heatpump/lg_heatpump` with category **Integration**.
-3. Search the Marketplace for **LG Heat Pump** and install it.
-4. Restart Home Assistant.
+The integration is part of the Marketplace's default list, so no custom repository is needed.
+
+1. In Home Assistant, go to **Settings → Marketplace**.
+2. Search for **LG Heat Pump** and select it.
+3. Select **Install**, then confirm in the dialog.
+4. Continue with the [configuration](#configuration) below.
+
+[![Open your Home Assistant instance and open the repository inside the Marketplace.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=lg-heatpump&repository=lg_heatpump&category=Integration)
+
+On older installations (before Home Assistant 2026.11) that use HACS instead of the Marketplace, the procedure differs slightly: The button is called **Download** and a restart is required.
 
 ### Manual
 
@@ -66,6 +72,8 @@ block reads.
 3. Restart Home Assistant.
 
 ## Configuration
+
+[![Open your Home Assistant instance and start setting up the integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=lg_heatpump)
 
 Go to **Settings → Devices & services → Add integration** and search for
 **LG Heat Pump**. You will be asked for:
@@ -197,7 +205,7 @@ Apache-2.0. See [LICENSE](LICENSE).
 
 [library]: https://github.com/lg-heatpump/lg-heatpump-modbus
 [hacs]: https://hacs.xyz
-[hacs-shield]: https://img.shields.io/badge/HACS-Custom-41BDF5.svg
+[hacs-shield]: https://img.shields.io/badge/HACS-Default-41BDF5.svg
 [releases]: https://github.com/lg-heatpump/lg_heatpump/releases
 [release-shield]: https://img.shields.io/github/release/lg-heatpump/lg_heatpump.svg
 [license-shield]: https://img.shields.io/badge/license-Apache--2.0-blue.svg
