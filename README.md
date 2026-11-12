@@ -71,6 +71,10 @@ On older installations (before Home Assistant 2026.11) that use HACS instead of 
 2. Copy `custom_components/lg_heatpump` into your Home Assistant `config/custom_components` directory.
 3. Restart Home Assistant.
 
+### Migrating from the legacy YAML package
+
+Coming from [homeassistant_lg_therma_v_modbus](https://github.com/basti242/homeassistant_lg_therma_v_modbus)? See [docs/migration.md](docs/migration.md).
+
 ## Configuration
 
 [![Open your Home Assistant instance and start setting up the integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=lg_heatpump)
