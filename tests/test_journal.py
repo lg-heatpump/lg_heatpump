@@ -2,9 +2,14 @@
 
 from __future__ import annotations
 
+import json
 from typing import TYPE_CHECKING
 
-from modbus_connection import IllegalDataAddressError, ModbusTimeoutError
+from modbus_connection import (
+    IllegalDataAddressError,
+    ModbusConnectionError,
+    ModbusTimeoutError,
+)
 
 from custom_components.lg_heatpump.const import DOMAIN
 from custom_components.lg_heatpump.diagnostics import async_get_config_entry_diagnostics
@@ -16,7 +21,7 @@ from homeassistant.components.number import (
 )
 from homeassistant.const import ATTR_ENTITY_ID
 
-from . import MOCK_UNIT_ID
+from . import MOCK_HOST, MOCK_UNIT_ID
 
 if TYPE_CHECKING:
     from modbus_connection.mock import MockModbusConnection
@@ -98,6 +103,25 @@ async def test_a_silent_unit_shows_as_timeouts_and_a_link_error(
     assert journal["polls"][-1]["error"] == "ModbusTimeoutError: silent"
     assert _events(journal, "timeout")
     assert _events(journal, "link_error")[0]["table"] == "readings"
+
+
+async def test_the_gateway_address_is_redacted_inside_error_texts(
+    hass: HomeAssistant,
+    mock_connection: MockModbusConnection,
+    init_integration: MockConfigEntry,
+) -> None:
+    """A link error names the gateway; the download must not."""
+    mock_connection.for_unit(MOCK_UNIT_ID).fail_requests(
+        ModbusConnectionError(f"could not connect to {MOCK_HOST}:502")
+    )
+    await _poll_readings(hass, init_integration)
+
+    diagnostics = await async_get_config_entry_diagnostics(hass, init_integration)
+    assert MOCK_HOST not in json.dumps(diagnostics)
+    assert diagnostics["journal"]["polls"][-1]["error"] == (
+        "ModbusConnectionError: could not connect to **REDACTED**:502"
+    )
+    assert diagnostics["raw"] == ("unavailable: could not connect to **REDACTED**:502")
 
 
 async def test_a_write_is_kept_with_its_value(
