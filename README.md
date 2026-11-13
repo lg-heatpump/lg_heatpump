@@ -154,7 +154,8 @@ Nothing has to be switched on beforehand, and it does not fill the Home
 Assistant log. It is kept in memory: a reload of the entry or a restart of Home
 Assistant starts it afresh, so download the diagnostics before either. At a
 10-second interval the requests reach back roughly an hour, the polls a few
-hours, the events much longer.
+hours, the events much longer. The gateway's address is redacted from the download,
+also where an error text names it.
 
 To collect logs, add this to `configuration.yaml`:
 
