@@ -120,6 +120,14 @@
       }
     },
     "select": {
+      "operation_mode": {
+        "name": "Operation mode",
+        "state": {
+          "auto": "Auto",
+          "cool": "Cooling",
+          "heat": "Heating"
+        }
+      },
       "control_method": {
         "name": "Control method",
         "state": {

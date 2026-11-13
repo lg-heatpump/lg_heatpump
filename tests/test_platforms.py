@@ -38,6 +38,7 @@ from homeassistant.const import (
     SERVICE_TURN_ON,
     STATE_OFF,
     STATE_ON,
+    STATE_UNKNOWN,
 )
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ServiceValidationError
@@ -384,6 +385,66 @@ async def test_select_control_method(
     await hass.async_block_till_done(wait_background_tasks=True)
 
     assert mock_connection.for_unit(MOCK_UNIT_ID).holding[1] == 1
+
+
+async def test_select_operation_mode_reads_and_writes_the_mode_alone(
+    hass: HomeAssistant,
+    init_integration: MockConfigEntry,
+    mock_connection: MockModbusConnection,
+) -> None:
+    """The mode select writes holding 0 and leaves the heating circuit alone."""
+    unit = mock_connection.for_unit(MOCK_UNIT_ID)
+    unit.coils[0] = False  # heating circuit off: the climate entity would show "off"
+    await init_integration.runtime_data.settings.async_refresh()
+    await hass.async_block_till_done(wait_background_tasks=True)
+
+    entity_id = "select.lg_therma_v_operation_mode"
+    assert hass.states.get(entity_id).state == "heat"
+
+    await hass.services.async_call(
+        SELECT_DOMAIN,
+        SERVICE_SELECT_OPTION,
+        {ATTR_ENTITY_ID: entity_id, ATTR_OPTION: "auto"},
+        blocking=True,
+    )
+    await hass.async_block_till_done(wait_background_tasks=True)
+
+    assert unit.holding[0] == 3
+    assert unit.coils[0] is False
+    assert hass.states.get(entity_id).state == "auto"
+
+
+async def test_select_operation_mode_offers_no_cooling(
+    hass: HomeAssistant,
+    init_integration: MockConfigEntry,
+    mock_connection: MockModbusConnection,
+) -> None:
+    """Cooling stays unavailable until it has been tested on hardware."""
+    entity_id = "select.lg_therma_v_operation_mode"
+    assert hass.states.get(entity_id).attributes["options"] == ["auto", "heat"]
+
+    with pytest.raises(ServiceValidationError):
+        await hass.services.async_call(
+            SELECT_DOMAIN,
+            SERVICE_SELECT_OPTION,
+            {ATTR_ENTITY_ID: entity_id, ATTR_OPTION: "cool"},
+            blocking=True,
+        )
+
+    assert mock_connection.for_unit(MOCK_UNIT_ID).holding[0] == 4
+
+
+async def test_select_operation_mode_is_unknown_when_the_unit_reports_cooling(
+    hass: HomeAssistant,
+    init_integration: MockConfigEntry,
+    mock_connection: MockModbusConnection,
+) -> None:
+    """A mode the select does not offer shows as unknown instead of failing."""
+    mock_connection.for_unit(MOCK_UNIT_ID).holding[0] = 0
+    await init_integration.runtime_data.settings.async_refresh()
+    await hass.async_block_till_done(wait_background_tasks=True)
+
+    assert hass.states.get("select.lg_therma_v_operation_mode").state == STATE_UNKNOWN
 
 
 async def test_refresh_button_polls_both_coordinators(
