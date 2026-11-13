@@ -127,6 +127,12 @@ Home Assistant is reflected as soon as the heat pump has taken it.
 Each sub-system reads only its own registers. One block the heat pump refuses
 makes only that sub-system's entities unavailable; the rest keep updating.
 
+On a gateway shared with other Modbus consumers, requests queue behind one lock.
+The integration therefore asks the shared link for a request timeout of at least
+20 s (a floor: it never shortens another consumer's). This needs
+`modbus-connection` 4.12.3, shipped with Home Assistant 2026.10; on 2026.9 the
+library default of 10 s stays in place.
+
 ## Troubleshooting
 
 **The entry never finishes setting up.** The heat pump is not answering. Check
