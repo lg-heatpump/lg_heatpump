@@ -145,6 +145,18 @@ which is what makes a scaling or address bug fixable.
 
 **No connection was established**, e.g., `read_input_registers(0, 5): Response timeout after 10.0 seconds`.  This is a known issue on the Waveshare RS232/485 TO ETH adapter. In its web interface, set the `ModbusTCP Poll` to disabled.
  
+**Something went wrong a while ago.** The same download carries a **journal**
+that is always on: the last 2000 Modbus requests (function, address, duration,
+outcome; values only for writes), the last 1000 polls (duration, which
+sub-systems failed and why) and the last 300 events worth keeping longer
+(setups, sub-systems failing and recovering, timeouts, link errors, writes).
+Nothing has to be switched on beforehand, and it does not fill the Home
+Assistant log. It is kept in memory: a reload of the entry or a restart of Home
+Assistant starts it afresh, so download the diagnostics before either. At a
+10-second interval the requests reach back roughly an hour, the polls a few
+hours, the events much longer. The gateway's address is redacted from the download,
+also where an error text names it.
+
 To collect logs, add this to `configuration.yaml`:
 
 ```yaml
