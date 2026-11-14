@@ -3,8 +3,7 @@
 from unittest.mock import patch
 
 from modbus_connection import IllegalDataAddressError, ModbusTimeoutError
-from modbus_connection.mock import MockModbusConnection, MockModbusUnit
-import pytest
+from modbus_connection.mock import MockModbusConnection
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.lg_heatpump.const import (
@@ -42,13 +41,6 @@ async def test_setup_and_unload(
     assert init_integration.state is ConfigEntryState.NOT_LOADED
 
 
-needs_require_timeout = pytest.mark.skipif(
-    not hasattr(MockModbusUnit, "require_timeout"),
-    reason="modbus-connection < 4.12.3 has no require_timeout",
-)
-
-
-@needs_require_timeout
 async def test_setup_asks_the_link_for_a_timeout_floor(
     mock_connection: MockModbusConnection,
     init_integration: MockConfigEntry,
@@ -57,7 +49,6 @@ async def test_setup_asks_the_link_for_a_timeout_floor(
     assert mock_connection.for_unit(MOCK_UNIT_ID).required_timeout == REQUEST_TIMEOUT
 
 
-@needs_require_timeout
 async def test_the_timeout_floor_never_shortens_another_units_requirement(
     hass: HomeAssistant,
     mock_config_entry: MockConfigEntry,
@@ -76,22 +67,6 @@ async def test_the_timeout_floor_never_shortens_another_units_requirement(
     assert other_unit.required_timeout == REQUEST_TIMEOUT + 10
     # The link resolves to the largest requirement of any unit on it.
     assert mock_connection._timeout == REQUEST_TIMEOUT + 10
-
-
-async def test_setup_works_without_require_timeout(
-    hass: HomeAssistant,
-    mock_config_entry: MockConfigEntry,
-    patched_connection: None,
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    """An older modbus-connection without the method still sets the entry up."""
-    monkeypatch.delattr(MockModbusUnit, "require_timeout", raising=False)
-    mock_config_entry.add_to_hass(hass)
-
-    await hass.config_entries.async_setup(mock_config_entry.entry_id)
-    await hass.async_block_till_done(wait_background_tasks=True)
-
-    assert mock_config_entry.state is ConfigEntryState.LOADED
 
 
 async def test_unload_closes_the_connection(

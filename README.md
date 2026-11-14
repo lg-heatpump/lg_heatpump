@@ -21,7 +21,7 @@ This is the Marketplace (formerly called HACS) build. There are three different 
 | Modbus library      | `pymodbus`                                                                                                              | `modbus-connection` / `tmodbus`                         | `modbus-connection` / `tmodbus`                                                                |
 | Setup from UI       | No                                                                                                                      | Yes                                                     | Yes                                                                                            |
 | Maintainability     | Hard                                                                                                                    | Medium/Easy                                             | Easy                                                                                           |
-| Limitations         | No UI setup. Entities do not belong to any device. Complicated entity handling. Hard to update. Can cause conflicts with other Modbus communications | Might get breaking changes. Requires at least HA 2026.9 | Not available yet      |
+| Limitations         | No UI setup. Entities do not belong to any device. Complicated entity handling. Hard to update. Can cause conflicts with other Modbus communications | Might get breaking changes. Requires at least HA 2026.10 | Not available yet      |
 
 
 Currently, this Marketplace (HACS) integration is the recommended way. 
@@ -44,7 +44,7 @@ block reads.
 
 ## Requirements
 
-* Home Assistant 2026.9.1 or newer.
+* Home Assistant 2026.10.0 or newer.
 * The heat pump's Modbus interface (PI485 / third-party control module) wired to
   a **Modbus TCP gateway** — a serial-to-Ethernet bridge, or an ESPHome Modbus
   bridge — reachable from Home Assistant.
@@ -129,9 +129,7 @@ makes only that sub-system's entities unavailable; the rest keep updating.
 
 On a gateway shared with other Modbus consumers, requests queue behind one lock.
 The integration therefore asks the shared link for a request timeout of at least
-20 s (a floor: it never shortens another consumer's). This needs
-`modbus-connection` 4.12.3, shipped with Home Assistant 2026.10; on 2026.9 the
-library default of 10 s stays in place.
+20 s (a floor: it never shortens another consumer's).
 
 ## Troubleshooting
 

@@ -18,7 +18,6 @@ from .const import (
     CONF_DEBUG,
     CONF_MODEL,
     CONF_UNIT_ID,
-    LOGGER,
     REQUEST_TIMEOUT,
     SCAN_INTERVAL,
     SETTINGS_SCAN_INTERVAL,
@@ -54,16 +53,7 @@ async def async_setup_entry(
         create_modbus_params(entry.data),
         entry.data[CONF_UNIT_ID],
     )
-    # ``require_timeout`` needs modbus-connection 4.12.3 (Home Assistant 2026.10);
-    # the 2026.9 line pins an older release without it. Skipping the call there
-    # leaves the library default in place, which is what every release before
-    # this change used.
-    if (require_timeout := getattr(unit, "require_timeout", None)) is not None:
-        require_timeout(REQUEST_TIMEOUT)
-    else:
-        LOGGER.debug(
-            "modbus-connection has no require_timeout; keeping the default timeout"
-        )
+    unit.require_timeout(REQUEST_TIMEOUT)
     device = LgHeatPump(
         unit,
         model=entry.data[CONF_MODEL],

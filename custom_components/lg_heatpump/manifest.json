@@ -9,6 +9,6 @@
   "iot_class": "local_polling",
   "issue_tracker": "https://github.com/lg-heatpump/lg_heatpump/issues",
   "loggers": ["modbus_connection", "tmodbus"],
-  "requirements": ["modbus-connection[tmodbus]>=4.8.1,<5"],
+  "requirements": ["modbus-connection[tmodbus]>=4.12.3,<5"],
   "version": "0.0.5"
 }
