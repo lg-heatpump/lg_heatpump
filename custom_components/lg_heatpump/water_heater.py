@@ -47,7 +47,12 @@ async def async_setup_entry(
 class LgHeatPumpWaterHeater(LgHeatPumpSpanningEntity, WaterHeaterEntity):
     """The domestic hot water tank."""
 
+    # Home Assistant 2026.11 renamed the temperature members to native_*; the old
+    # names stop working in 2027.11. This class provides both until the minimum
+    # version reaches 2026.11: older releases read the old names, newer ones the
+    # native ones, and a class providing both logs no deprecation warning.
     _attr_temperature_unit = UnitOfTemperature.CELSIUS
+    _attr_native_temperature_unit = UnitOfTemperature.CELSIUS
     _attr_supported_features = (
         WaterHeaterEntityFeature.TARGET_TEMPERATURE
         | WaterHeaterEntityFeature.OPERATION_MODE
@@ -74,6 +79,16 @@ class LgHeatPumpWaterHeater(LgHeatPumpSpanningEntity, WaterHeaterEntity):
     def target_temperature(self) -> float | None:
         """Return the hot water setpoint."""
         return self.device.controls.dhw_target_temperature
+
+    @property
+    def native_current_temperature(self) -> float | None:
+        """Return the hot water tank temperature."""
+        return self.current_temperature
+
+    @property
+    def native_target_temperature(self) -> float | None:
+        """Return the hot water setpoint."""
+        return self.target_temperature
 
     @property
     @override
