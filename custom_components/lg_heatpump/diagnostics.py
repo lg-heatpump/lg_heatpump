@@ -18,13 +18,14 @@ def _scrub(value: Any, host: str) -> Any:
 
     ``async_redact_data`` only blanks values by key. The address also turns up
     inside error texts ("could not connect to <host>:<port>"), which the journal
-    keeps for hours and the raw dump carries when the link is down.
+    keeps for hours and the raw dump carries when the link is down. Keys are
+    scrubbed as well, and tuples come back as lists, as JSON writes them anyway.
     """
     if isinstance(value, str):
         return value.replace(host, REDACTED)
     if isinstance(value, dict):
-        return {key: _scrub(item, host) for key, item in value.items()}
-    if isinstance(value, list):
+        return {_scrub(key, host): _scrub(item, host) for key, item in value.items()}
+    if isinstance(value, list | tuple):
         return [_scrub(item, host) for item in value]
     return value
 

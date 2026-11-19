@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import inspect
 import json
 from typing import TYPE_CHECKING
 
@@ -9,11 +10,21 @@ from modbus_connection import (
     IllegalDataAddressError,
     ModbusConnectionError,
     ModbusTimeoutError,
+    ModbusUnit,
 )
+import pytest
 
 from custom_components.lg_heatpump.const import DOMAIN
-from custom_components.lg_heatpump.diagnostics import async_get_config_entry_diagnostics
-from custom_components.lg_heatpump.journal import Journal
+from custom_components.lg_heatpump.diagnostics import (
+    _scrub,
+    async_get_config_entry_diagnostics,
+)
+from custom_components.lg_heatpump.journal import (
+    RECORDED_REQUESTS,
+    UNRECORDED_REQUESTS,
+    Journal,
+    RecordingUnit,
+)
 from homeassistant.components.number import (
     ATTR_VALUE,
     DOMAIN as NUMBER_DOMAIN,
@@ -169,3 +180,102 @@ def test_the_buffers_are_bounded() -> None:
     assert journal.events[0]["n"] == 5
     assert journal.requests.maxlen == 2000
     assert journal.polls.maxlen == 1000
+
+
+def test_every_request_of_the_protocol_is_either_recorded_or_passed_on() -> None:
+    """A request added to ``ModbusUnit`` fails here instead of bypassing the journal."""
+    protocol = {
+        name
+        for name, member in inspect.getmembers(ModbusUnit, inspect.isfunction)
+        if name.startswith(("read_", "write_", "mask_write_"))
+    }
+
+    assert protocol == RECORDED_REQUESTS | UNRECORDED_REQUESTS
+    assert not RECORDED_REQUESTS & UNRECORDED_REQUESTS
+    for name in RECORDED_REQUESTS:
+        assert name in vars(RecordingUnit), name
+        assert inspect.signature(
+            getattr(RecordingUnit, name), eval_str=True
+        ) == inspect.signature(getattr(ModbusUnit, name), eval_str=True), name
+
+
+async def test_a_request_records_only_its_own_fields(
+    mock_connection: MockModbusConnection,
+) -> None:
+    """The fields are fixed per request; nothing can overwrite the journal's keys."""
+    journal = Journal()
+    unit = RecordingUnit(mock_connection.for_unit(MOCK_UNIT_ID), journal)
+
+    await unit.read_holding_registers(0, 2)
+    await unit.write_registers(0, [1, 2])
+
+    read, write = journal.requests
+    assert read.keys() == {"time", "request", "address", "count", "ms", "outcome"}
+    assert (read["request"], read["address"], read["count"]) == (
+        "read_holding_registers",
+        0,
+        2,
+    )
+    assert write.keys() == {"time", "request", "address", "values", "ms", "outcome"}
+    assert write["values"] == [1, 2]
+    assert [e["event"] for e in journal.events] == ["write"]
+
+
+@pytest.mark.parametrize(
+    ("request_name", "args", "fields"),
+    [
+        ("read_coils", (0, 2), {"address": 0, "count": 2}),
+        ("read_discrete_inputs", (0, 2), {"address": 0, "count": 2}),
+        ("read_holding_registers", (0, 2), {"address": 0, "count": 2}),
+        ("read_input_registers", (0, 2), {"address": 0, "count": 2}),
+        ("write_coil", (1, True), {"address": 1, "value": True}),
+        ("write_coils", (0, [True, False]), {"address": 0, "values": [True, False]}),
+        ("write_register", (4, 7), {"address": 4, "value": 7}),
+        ("write_registers", (4, [7, 8]), {"address": 4, "values": [7, 8]}),
+        (
+            "mask_write_register",
+            (4, 0xFF00, 0x0001),
+            {"address": 4, "and_mask": 0xFF00, "or_mask": 0x0001},
+        ),
+    ],
+)
+async def test_each_recorded_request_keeps_its_fields(
+    mock_connection: MockModbusConnection,
+    request_name: str,
+    args: tuple,
+    fields: dict,
+) -> None:
+    """Every recorded request reaches the unit and leaves one line with its fields."""
+    journal = Journal()
+    unit = RecordingUnit(mock_connection.for_unit(MOCK_UNIT_ID), journal)
+
+    await getattr(unit, request_name)(*args)
+
+    (entry,) = journal.requests
+    assert entry["request"] == request_name
+    assert {k: entry[k] for k in fields} == fields
+    assert entry["outcome"] == "ok"
+    assert len(journal.events) == (0 if request_name.startswith("read_") else 1)
+
+
+def test_anything_else_goes_straight_to_the_unit(
+    mock_connection: MockModbusConnection,
+) -> None:
+    """``require_timeout`` and the unrecorded requests are the unit's own."""
+    inner = mock_connection.for_unit(MOCK_UNIT_ID)
+    unit = RecordingUnit(inner, Journal())
+
+    assert unit.require_timeout == inner.require_timeout
+    assert unit.read_device_identification == inner.read_device_identification
+
+
+def test_the_address_is_scrubbed_from_keys_and_tuples() -> None:
+    """Keys and tuples are scrubbed like everything else."""
+    scrubbed = _scrub(
+        {MOCK_HOST: (f"{MOCK_HOST}:502", 1), "list": [MOCK_HOST]}, MOCK_HOST
+    )
+
+    assert scrubbed == {
+        "**REDACTED**": ["**REDACTED**:502", 1],
+        "list": ["**REDACTED**"],
+    }
