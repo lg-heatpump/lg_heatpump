@@ -18,6 +18,7 @@ from .const import (
     CONF_DEBUG,
     CONF_MODEL,
     CONF_UNIT_ID,
+    REQUEST_TIMEOUT,
     SCAN_INTERVAL,
     SETTINGS_SCAN_INTERVAL,
 )
@@ -52,6 +53,7 @@ async def async_setup_entry(
         create_modbus_params(entry.data),
         entry.data[CONF_UNIT_ID],
     )
+    unit.require_timeout(REQUEST_TIMEOUT)
     device = LgHeatPump(
         unit,
         model=entry.data[CONF_MODEL],
