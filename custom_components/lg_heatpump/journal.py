@@ -26,7 +26,7 @@ from dataclasses import dataclass, field
 import time
 from typing import TYPE_CHECKING, Any
 
-from modbus_connection import ModbusTimeoutError
+from modbus_connection import ModbusTimeoutError, ModbusUnit
 
 from homeassistant.util.dt import utcnow
 
@@ -149,7 +149,7 @@ class RecordingUnit:
     the real unit.
     """
 
-    def __init__(self, unit: Any, journal: Journal) -> None:
+    def __init__(self, unit: ModbusUnit, journal: Journal) -> None:
         """Wrap ``unit``; requests are recorded in ``journal``."""
         self._unit = unit
         self._journal = journal
