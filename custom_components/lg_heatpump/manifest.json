@@ -1,7 +1,7 @@
 {
   "domain": "lg_heatpump",
   "name": "LG Heat Pump",
-  "codeowners": ["@G-nn-r"],
+  "codeowners": ["@basti242", "@cjungde", "@G-nn-r"],
   "config_flow": true,
   "dependencies": ["modbus"],
   "documentation": "https://github.com/lg-heatpump/lg_heatpump",
