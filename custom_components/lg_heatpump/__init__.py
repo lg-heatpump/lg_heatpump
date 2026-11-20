@@ -23,6 +23,7 @@ from .const import (
     SETTINGS_SCAN_INTERVAL,
 )
 from .coordinator import LgHeatPumpCoordinator, LgHeatPumpRuntimeData
+from .journal import Journal, RecordingUnit
 from .lg_heatpump_modbus import LgHeatPump
 
 if TYPE_CHECKING:
@@ -54,8 +55,10 @@ async def async_setup_entry(
         entry.data[CONF_UNIT_ID],
     )
     unit.require_timeout(REQUEST_TIMEOUT)
+    journal = Journal()
+    journal.event("setup", model=entry.data[CONF_MODEL])
     device = LgHeatPump(
-        unit,
+        RecordingUnit(unit, journal),
         model=entry.data[CONF_MODEL],
         debug=entry.data.get(CONF_DEBUG, False),
     )
@@ -67,10 +70,15 @@ async def async_setup_entry(
         hass, entry, device, device.async_update_settings, SETTINGS_SCAN_INTERVAL
     )
 
+    readings.journal, readings.journal_table = journal, "readings"
+    settings.journal, settings.journal_table = journal, "settings"
+
     await readings.async_config_entry_first_refresh()
     await settings.async_config_entry_first_refresh()
 
-    entry.runtime_data = LgHeatPumpRuntimeData(device, readings, settings)
+    entry.runtime_data = LgHeatPumpRuntimeData(
+        device, readings, settings, journal=journal
+    )
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     return True
