@@ -90,7 +90,12 @@ class LgHeatPumpClimate(LgHeatPumpSpanningEntity, ClimateEntity):
 
     entity_description: LgHeatPumpClimateDescription
 
+    # Home Assistant 2026.11 renamed the temperature members to native_*; the old
+    # names stop working in 2027.11. This class provides both until the minimum
+    # version reaches 2026.11: older releases read the old names, newer ones the
+    # native ones, and a class providing both logs no deprecation warning.
     _attr_temperature_unit = UnitOfTemperature.CELSIUS
+    _attr_native_temperature_unit = UnitOfTemperature.CELSIUS
     # HVACMode.COOL is disabled until it has been verified on a real device (#24).
     _attr_hvac_modes = [
         HVACMode.OFF,
@@ -138,6 +143,16 @@ class LgHeatPumpClimate(LgHeatPumpSpanningEntity, ClimateEntity):
         if self._on_room_air:
             return controls.room_air_setpoint(self._circuit)
         return controls.target_temperature(self._circuit)
+
+    @property
+    def native_current_temperature(self) -> float | None:
+        """Return the temperature the heat pump is regulating on."""
+        return self.current_temperature
+
+    @property
+    def native_target_temperature(self) -> float | None:
+        """Return the setpoint the heat pump is aiming for."""
+        return self.target_temperature
 
     @property
     @override
