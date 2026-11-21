@@ -5,12 +5,15 @@ coordinator drives it and whether it is available: a sub-system that failed the
 last poll keeps its previous values, and its entities say so.
 """
 
+import asyncio
 from dataclasses import dataclass
+import math
 from typing import Any, override
 
 from homeassistant.helpers.entity import EntityDescription
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
+from .const import LOGGER, WRITE_CONFIRM_DELAYS
 from .coordinator import LgHeatPumpCoordinator, LgHeatPumpRuntimeData
 
 
@@ -30,6 +33,7 @@ class LgHeatPumpEntity(CoordinatorEntity[LgHeatPumpCoordinator]):
 
     _attr_has_entity_name = True
     entity_description: LgHeatPumpEntityDescription
+    _confirm_task: asyncio.Task[None] | None = None
 
     def __init__(
         self,
@@ -61,6 +65,63 @@ class LgHeatPumpEntity(CoordinatorEntity[LgHeatPumpCoordinator]):
         if hasattr(subsystem, self.entity_description.attribute):
             return getattr(subsystem, self.entity_description.attribute)
         return getattr(self.device, self.entity_description.attribute)
+
+    async def _async_write_and_refresh(self, value: Any) -> None:
+        """Write this entity's datapoint, refresh, and confirm in the background.
+
+        The refresh is the one the platforms always did. If it does not show the
+        written value yet, the entity reads again a few seconds later instead of
+        waiting for the next scheduled poll; see ``WRITE_CONFIRM_DELAYS``.
+        """
+        attribute = self.entity_description.attribute
+        await self._subsystem.write(attribute, value)
+        await self.coordinator.async_request_refresh()
+        if self._confirm_task is not None and not self._confirm_task.done():
+            # A newer write supersedes what the older one was waiting for.
+            self._confirm_task.cancel()
+            self._confirm_task = None
+        if self._reads(attribute, value):
+            return
+        self._confirm_task = self.coordinator.config_entry.async_create_background_task(
+            self.hass,
+            self._async_confirm_write(attribute, value),
+            f"{self.entity_id} confirm write",
+        )
+
+    def _reads(self, attribute: str, value: Any) -> bool:
+        """Return whether the sub-system currently reports ``value``."""
+        reported = getattr(self._subsystem, attribute, None)
+        if isinstance(value, float) and isinstance(reported, (int, float)):
+            # A decoded tenth of a kilowatt need not be the same float.
+            return math.isclose(reported, value, abs_tol=1e-6)
+        return reported == value
+
+    async def _async_confirm_write(self, attribute: str, value: Any) -> None:
+        """Re-read until the written value shows, or give up after the last try."""
+        journal = self.runtime_data.journal
+        for attempt, delay in enumerate(WRITE_CONFIRM_DELAYS, start=1):
+            await asyncio.sleep(delay)
+            await self.coordinator.async_refresh()
+            if self._reads(attribute, value):
+                journal.event(
+                    "write_confirmed", attribute=attribute, value=value, rereads=attempt
+                )
+                return
+        journal.event(
+            "write_unconfirmed",
+            attribute=attribute,
+            value=value,
+            reads=getattr(self._subsystem, attribute, None),
+            rereads=len(WRITE_CONFIRM_DELAYS),
+        )
+        LOGGER.warning(
+            "%s: wrote %s = %s, but the device still reports %s after %d re-reads",
+            self.coordinator.name,
+            attribute,
+            value,
+            getattr(self._subsystem, attribute, None),
+            len(WRITE_CONFIRM_DELAYS),
+        )
 
     @property
     @override

@@ -78,5 +78,4 @@ class LgHeatPumpNumber(LgHeatPumpEntity, NumberEntity):
     @override
     async def async_set_native_value(self, value: float) -> None:
         """Write a new value and refresh so the state follows the device."""
-        await self._subsystem.write(self.entity_description.attribute, int(value))
-        await self.coordinator.async_request_refresh()
+        await self._async_write_and_refresh(int(value))
