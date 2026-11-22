@@ -120,6 +120,14 @@
       }
     },
     "select": {
+      "operation_mode": {
+        "name": "Betriebsart",
+        "state": {
+          "auto": "Auto",
+          "cool": "Kühlen",
+          "heat": "Heizen"
+        }
+      },
       "control_method": {
         "name": "Regelungsart",
         "state": {

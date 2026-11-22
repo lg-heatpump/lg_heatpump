@@ -24,7 +24,7 @@ integration must **not** read the heat pump at the same time (see
 | `switch.hp_hauptschalter` (coil 0) | Switch **Heating circuit** (space heating and cooling only, not hot water) |
 | `switch.hp_dhw` (coil 1) | `water_heater` **Hot water**: `water_heater.turn_on` / `turn_off` |
 | `number.hp_dhw_target_temperatur_number` | `water_heater` **Hot water**: `water_heater.set_temperature` (30 to 80 °C), the target is the attribute `temperature` |
-| `select.hp_operation_mode_select` | `climate` **Circuit 1/2**: HVAC mode off / heat / auto. Heat and auto also switch the heating circuit on. Cooling is not enabled yet |
+| `select.hp_operation_mode_select` | Select **Operation mode** (auto / heating), the same register. Or `climate` **Circuit 1/2**: HVAC mode off / heat / auto, where heat and auto also switch the heating circuit on. Cooling is not enabled yet |
 | `select.hp_control_method_select` | Select **Control method** |
 | `number.hp_shift_value_in_auto_mode_circuit1/2_number` | Number **Circuit 1/2 setpoint shift** (-5 to +5 K) |
 | `switch.hp_silent_mode` (coil 2) | Switch **Silent mode** |

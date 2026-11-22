@@ -11,7 +11,7 @@ from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from .coordinator import LgHeatPumpConfigEntry
 from .entity import LgHeatPumpEntity, LgHeatPumpEntityDescription, build_entities
-from .lg_heatpump_modbus import ControlMethod
+from .lg_heatpump_modbus import ControlMethod, OperationMode
 
 PARALLEL_UPDATES = 1
 
@@ -29,6 +29,19 @@ class LgHeatPumpSelectDescription(SelectEntityDescription, LgHeatPumpEntityDescr
 
 
 SELECT_DESCRIPTIONS: tuple[LgHeatPumpSelectDescription, ...] = (
+    # The thermostat entity shows no mode while the heating circuit is off and
+    # writes the circuit switch together with the mode. This select reads and
+    # writes the mode register alone.
+    LgHeatPumpSelectDescription(
+        key="operation_mode",
+        translation_key="operation_mode",
+        component="controls",
+        attribute="operation_mode",
+        # COOL is disabled until it has been tested on real hardware. See issue #24
+        options=[option for option in _options(OperationMode) if option != "cool"],
+        options_enum=OperationMode,
+        entity_category=EntityCategory.CONFIG,
+    ),
     LgHeatPumpSelectDescription(
         key="control_method",
         translation_key="control_method",
